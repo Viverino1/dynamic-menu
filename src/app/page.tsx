@@ -8,5 +8,9 @@ export default function HomePage() {
   if (error) return <div>Error loading sheet data.</div>;
   if (!menu) return <div>Loading...</div>;
 
-  return <main></main>;
+  return (
+    <main>
+      <pre>{JSON.stringify(menu, null, 2)}</pre>
+    </main>
+  );
 }

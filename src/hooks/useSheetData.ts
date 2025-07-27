@@ -32,5 +32,5 @@ export function useSheetData() {
     };
   }, [mutate]);
 
-  return { menu: data?.menuItems, error };
+  return { menu: data?.menuItems, devices: data?.devices, error };
 }
