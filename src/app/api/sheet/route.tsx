@@ -25,7 +25,7 @@ export async function GET() {
 export async function POST(request: Request) {
   const data = await request.json();
   console.log(
-    `Sheet data is being updated at ${new Date().toLocaleTimeString()} on ${new Date().toLocaleDateString()}`
+    `Cache being updated at ${new Date().toLocaleTimeString()} on ${new Date().toLocaleDateString()}`
   );
 
   await redis.set("sheetData", JSON.stringify(data));
