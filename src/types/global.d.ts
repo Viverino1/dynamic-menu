@@ -43,6 +43,13 @@ declare global {
     menuItems: MenuItem[];
   }
 
+  interface Rect {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }
+
   type State = "loading" | "success" | "error";
 }
 
