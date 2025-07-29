@@ -37,32 +37,6 @@ export default function Menu({
   );
 }
 
-function MenuItem({ item, rect }: { item: MenuItem; rect: Rect }) {
-  return (
-    <h3
-      className="border w-full h-full overflow-clip"
-      style={{ position: "absolute", width: rect.width, height: rect.height, top: rect.y, left: rect.x }}
-    >
-      {item.name}
-    </h3>
-  );
-}
-
-function Category({ category, rect }: { category: Category; rect: Rect }) {
-  return (
-    <h3
-      className="border w-full h-full overflow-clip"
-      style={{ position: "absolute", width: rect.width, height: rect.height, top: rect.y, left: rect.x }}
-    >
-      {formatTitle(category)}
-    </h3>
-  );
-}
-
-const ITEM_HEIGHT = 0.1 / 3.5; // Value in percentage of the container height.
-const PADDING = 0.1 / 7; // Value in percentage of the container height.
-const GAP = 0.1 / 7; // Value in percentage of the container height.
-
 function MenuContent({
   menu,
   screen,
@@ -72,46 +46,27 @@ function MenuContent({
   screen: Rect;
   isPortrait: boolean;
 }) {
-  const elements: JSX.Element[] = [];
-
-  const longestDimension = isPortrait ? screen.height : screen.width;
-
-  const padding = longestDimension * PADDING;
-  const gap = longestDimension * GAP;
-
-  const itemWidth = isPortrait ? screen.width / 2 - padding - gap / 2 : screen.width / 4 - padding - gap / 4;
-  const itemHeight = longestDimension * ITEM_HEIGHT;
-  const categoryHeight = itemHeight * 2;
-
-  let prevRect: Rect = { x: padding, y: padding, width: 0, height: 0 };
-
-  const func = (isCategory: boolean = false) => {
-    const rect: Rect = {
-      x: prevRect.x,
-      y: prevRect.y + prevRect.height,
-      width: itemWidth,
-      height: isCategory ? categoryHeight : itemHeight,
-    };
-
-    if (rect.y + rect.height > screen.height + 1) {
-      // If the next item would overflow the screen, reset to the top of the next column.
-      rect.x += itemWidth + gap;
-      rect.y = padding;
-    }
-
-    prevRect = rect;
-
-    return rect;
-  };
-
-  for (const [category, items] of Object.entries(menu)) {
-    const rect = func(true);
-    elements.push(<Category key={category} category={category as Category} rect={rect} />);
-    for (const item of items) {
-      const rect = func();
-      elements.push(<MenuItem key={`${category}-${item.name}-${item.price}`} item={item} rect={rect} />);
-    }
-  }
-
-  return <>{elements}</>;
+  const space = isPortrait ? "vw" : "vh";
+  return (
+    <div
+      className={`w-full h-full flex flex-col flex-wrap justify-between`}
+      style={{ padding: `1${space}`, gap: `1${space}` }}
+    >
+      {Object.keys(menu).map((category) => (
+        <div key={category} className="bg-yellow-500/50" style={{ marginBottom: `0${space}`, padding: `1${space}` }}>
+          <h2 className="break-after-avoid font-bold" style={{ fontSize: `1.75${space}` }}>
+            {formatTitle(category)}
+          </h2>
+          <div className="" style={{ fontSize: `1.25${space}` }}>
+            {menu[category].map((item: MenuItem) => (
+              <div key={item.name + item.price} className="w-full flex items-center justify-between break-inside-avoid">
+                <h3>{item.name}</h3>
+                <h3>{item.price}</h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }
