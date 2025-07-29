@@ -93,8 +93,8 @@ function AppContent({ menu, device }: { menu: Record<string, MenuItem[]>; device
           ...transformStyles,
         }}
       >
-        <div className="w-1/2 h-full bg-primary text-background"></div>
-        <div className="w-1/2 h-full bg-background text-foreground"></div>
+        {/* <div className="w-1/2 h-full bg-primary text-background"></div>
+        <div className="w-1/2 h-full bg-background text-foreground"></div> */}
         <div className="absolute inset-0 z-20">
           <Menu menu={menu} isPortrait={device.orientation === "portrait"} needsDimensionSwap={needsDimensionSwap} />
         </div>

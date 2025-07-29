@@ -12,28 +12,27 @@ export default function Menu({
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
-  const [rect, setRect] = useState<DOMRect | null>(null);
+  const [rect, setRect] = useState<Rect | null>(null);
 
   useEffect(() => {
-    const updateRect = () => (ref.current ? setRect(ref.current.getBoundingClientRect()) : null);
+    const updateRect = () => {
+      if (ref.current) {
+        const rect: Rect = ref.current.getBoundingClientRect();
+        setRect({
+          x: 0,
+          y: 0,
+          width: needsDimensionSwap ? rect.height : rect.width,
+          height: needsDimensionSwap ? rect.width : rect.height,
+        });
+      }
+    };
     updateRect();
     window.addEventListener("resize", updateRect);
     return () => window.removeEventListener("resize", updateRect);
   }, [ref.current, isPortrait]);
   return (
     <main className="w-full h-full relative" ref={ref}>
-      {rect && (
-        <MenuContent
-          menu={menu}
-          screen={{
-            x: 0,
-            y: 0,
-            width: needsDimensionSwap ? rect.height : rect.width,
-            height: needsDimensionSwap ? rect.width : rect.height,
-          }}
-          isPortrait={isPortrait}
-        />
-      )}
+      {rect && <MenuContent menu={menu} screen={rect} isPortrait={isPortrait} />}
     </main>
   );
 }
@@ -61,6 +60,8 @@ function Category({ category, rect }: { category: Category; rect: Rect }) {
 }
 
 const ITEM_HEIGHT = 0.1 / 3.5; // Value in percentage of the container height.
+const PADDING = 0.1 / 7; // Value in percentage of the container height.
+const GAP = 0.1 / 7; // Value in percentage of the container height.
 
 function MenuContent({
   menu,
@@ -73,11 +74,16 @@ function MenuContent({
 }) {
   const elements: JSX.Element[] = [];
 
-  let prevRect: Rect = { x: 0, y: 0, width: 0, height: 0 };
+  const longestDimension = isPortrait ? screen.height : screen.width;
 
-  const itemWidth = isPortrait ? screen.width / 2 : screen.width / 4;
-  const itemHeight = screen.height * ITEM_HEIGHT;
+  const padding = longestDimension * PADDING;
+  const gap = longestDimension * GAP;
+
+  const itemWidth = isPortrait ? screen.width / 2 - padding - gap / 2 : screen.width / 4 - padding - gap / 4;
+  const itemHeight = longestDimension * ITEM_HEIGHT;
   const categoryHeight = itemHeight * 2;
+
+  let prevRect: Rect = { x: padding, y: padding, width: 0, height: 0 };
 
   const func = (isCategory: boolean = false) => {
     const rect: Rect = {
@@ -89,8 +95,8 @@ function MenuContent({
 
     if (rect.y + rect.height > screen.height + 1) {
       // If the next item would overflow the screen, reset to the top of the next column.
-      rect.x += itemWidth;
-      rect.y = 0;
+      rect.x += itemWidth + gap;
+      rect.y = padding;
     }
 
     prevRect = rect;
