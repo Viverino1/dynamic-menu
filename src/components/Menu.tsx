@@ -3,12 +3,10 @@ import { JSX, useEffect, useRef, useState } from "react";
 
 export default function Menu({
   menu,
-  device,
   isPortrait,
   needsDimensionSwap,
 }: {
   menu: Record<string, MenuItem[]>;
-  device: Device;
   isPortrait: boolean;
   needsDimensionSwap: boolean;
 }) {
@@ -62,7 +60,7 @@ function Category({ category, rect }: { category: Category; rect: Rect }) {
   );
 }
 
-const ITEM_HEIGHT = 0.1 / 2; // Value in percentage of the container height.
+const ITEM_HEIGHT = 0.1 / 3.5; // Value in percentage of the container height.
 
 function MenuContent({
   menu,
@@ -105,7 +103,7 @@ function MenuContent({
     elements.push(<Category key={category} category={category as Category} rect={rect} />);
     for (const item of items) {
       const rect = func();
-      elements.push(<MenuItem key={`${category}-${item.name}`} item={item} rect={rect} />);
+      elements.push(<MenuItem key={`${category}-${item.name}-${item.price}`} item={item} rect={rect} />);
     }
   }
 
