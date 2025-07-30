@@ -1,4 +1,4 @@
-import { formatTitle } from "@/lib/utils";
+import { formatTitle, formatUSD } from "@/lib/utils";
 import { JSX, useEffect, useRef, useState } from "react";
 
 export default function Menu({
@@ -116,17 +116,19 @@ function MenuContent({
               backgroundColor: `${categoryColors[category]}CC`, // Adding 80 for 50% opacity
             }}
           >
-            <h2 className="break-after-avoid font-bold" style={{ fontSize: `1.75${space}` }}>
+            <h2 className="break-after-avoid font-bold font-outfit tracking-wide" style={{ fontSize: `1.75${space}` }}>
               {formatTitle(category)}
             </h2>
-            <div className="" style={{ fontSize: `1.25${space}` }}>
+            <div className="font-quicksand font-semibold" style={{ fontSize: `1.25${space}` }}>
               {menu[category].map((item: MenuItem) => (
                 <div
                   key={item.name + item.price}
-                  className="w-full flex items-center justify-between break-inside-avoid"
+                  className={`w-full flex items-center justify-between break-inside-avoid ${
+                    item.availability != "available" ? "opacity-50 line-through" : ""
+                  }`}
                 >
-                  <h3>{item.name}</h3>
-                  <h3>{item.price}</h3>
+                  <p className="">{item.name}</p>
+                  <p className="">{formatUSD(item.price)}</p>
                 </div>
               ))}
             </div>

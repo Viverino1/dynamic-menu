@@ -4,14 +4,16 @@
   --foreground: #2a2927;
   --background: oklch(97% 0.001 106.424);
   --primary: #a00000;
+  --font-quicksand: "Quicksand", sans-serif;
+  --font-outfit: "Outfit", sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-quicksand: var(--font-quicksand);
+  --font-outfit: var(--font-outfit);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,5 +26,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-quicksand);
 }
