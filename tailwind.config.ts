@@ -9,8 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        quicksand: ["Quicksand", "sans-serif"],
-        outfit: ["Outfit", "sans-serif"],
+        roca: ["var(--font-roca)", "Roca", "sans-serif"],
+      },
+      fontWeight: {
+        thin: "100",
+        light: "300",
+        normal: "400",
+        bold: "700",
+        heavy: "800",
+        black: "900",
       },
     },
   },

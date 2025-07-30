@@ -1,30 +1,121 @@
 @import "tailwindcss";
 
+/* Roca Font Family */
+@font-face {
+  font-family: "Roca";
+  src: url("/fonts/roca/Roca Thin.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roca";
+  src: url("/fonts/roca/Roca Thin Italic.ttf") format("truetype");
+  font-weight: 100;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roca";
+  src: url("/fonts/roca/Roca Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roca";
+  src: url("/fonts/roca/Roca Light Italic.ttf") format("truetype");
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roca";
+  src: url("/fonts/roca/Roca Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roca";
+  src: url("/fonts/roca/Roca Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roca";
+  src: url("/fonts/roca/Roca Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roca";
+  src: url("/fonts/roca/Roca Bold Italic.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roca";
+  src: url("/fonts/roca/Roca Heavy.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roca";
+  src: url("/fonts/roca/Roca Heavy Italic.ttf") format("truetype");
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roca";
+  src: url("/fonts/roca/Roca Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roca";
+  src: url("/fonts/roca/Roca Black Italic.ttf") format("truetype");
+  font-weight: 900;
+  font-style: italic;
+}
+
 :root {
   --foreground: #2a2927;
-  --background: oklch(97% 0.001 106.424);
+  --background: #f7f7f7;
   --primary: #a00000;
-  --font-quicksand: "Quicksand", sans-serif;
-  --font-outfit: "Outfit", sans-serif;
+  --font-roca: "Roca", sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
-  --font-quicksand: var(--font-quicksand);
-  --font-outfit: var(--font-outfit);
+  --font-roca: var(--font-roca);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground: #2a2927;
-    --background: oklch(97% 0.001 106.424);
+    --background: #f7f7f7;
   }
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-quicksand);
+  @apply antialiased bg-background text-foreground font-roca font-light;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-roca font-black;
 }

@@ -1,14 +1,17 @@
 import { formatTitle, formatUSD } from "@/lib/utils";
-import { JSX, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
+import PaintBrush from "./PaintBrush";
 
 export default function Menu({
   menu,
   isPortrait,
   needsDimensionSwap,
+  nativeIsPortrait,
 }: {
   menu: Record<string, MenuItem[]>;
   isPortrait: boolean;
   needsDimensionSwap: boolean;
+  nativeIsPortrait: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -29,112 +32,148 @@ export default function Menu({
     updateRect();
     window.addEventListener("resize", updateRect);
     return () => window.removeEventListener("resize", updateRect);
-  }, [ref.current, isPortrait]);
+  }, [isPortrait, needsDimensionSwap]);
   return (
     <main className="w-full h-full relative" ref={ref}>
-      {rect && <MenuContent menu={menu} screen={rect} isPortrait={isPortrait} />}
+      {rect && (
+        <MenuContent
+          menu={menu}
+          screen={rect}
+          nativeIsPortrait={nativeIsPortrait}
+          needsDimensionSwap={needsDimensionSwap}
+        />
+      )}
     </main>
   );
+}
+
+function decideIsRight(
+  ref: RefObject<HTMLDivElement | HTMLLIElement | null>,
+  screen: Rect,
+  needsDimensionSwap: boolean
+): boolean {
+  if (ref.current) {
+    const rect: Rect = ref.current.getBoundingClientRect();
+    if ((needsDimensionSwap ? rect.y : rect.x) >= screen.width / 2) return true;
+  }
+  return false;
 }
 
 function MenuContent({
   menu,
   screen,
-  isPortrait,
+  nativeIsPortrait,
+  needsDimensionSwap,
 }: {
   menu: Record<string, MenuItem[]>;
   screen: Rect;
-  isPortrait: boolean;
+  nativeIsPortrait: boolean;
+  needsDimensionSwap: boolean;
 }) {
-  const space = "vw";
-
-  // Darkness factor: 0.0 = no change, 1.0 = completely dark
-  // Adjust this value to control how much darker the colors become
-  const darknessFactor = 0.05;
-
-  // Saturation factor: 0.0 = grayscale, 1.0 = no change, >1.0 = more saturated
-  // Adjust this value to control how vibrant/saturated the colors are
-  const saturationFactor = 1.15;
-
-  // Function to adjust saturation and darkness of a hex color
-  const adjustColor = (hex: string, darknessFactor: number, saturationFactor: number): string => {
-    // Remove the # if present
-    const color = hex.replace("#", "");
-
-    // Parse RGB components
-    let r = parseInt(color.slice(0, 2), 16);
-    let g = parseInt(color.slice(2, 4), 16);
-    let b = parseInt(color.slice(4, 6), 16);
-
-    // Apply saturation adjustment
-    // Convert to HSL-like adjustment by finding the average (gray component)
-    const gray = (r + g + b) / 3;
-    r = Math.round(gray + (r - gray) * saturationFactor);
-    g = Math.round(gray + (g - gray) * saturationFactor);
-    b = Math.round(gray + (b - gray) * saturationFactor);
-
-    // Clamp values to 0-255 range
-    r = Math.max(0, Math.min(255, r));
-    g = Math.max(0, Math.min(255, g));
-    b = Math.max(0, Math.min(255, b));
-
-    // Apply darkness factor
-    r = Math.round(r * (1 - darknessFactor));
-    g = Math.round(g * (1 - darknessFactor));
-    b = Math.round(b * (1 - darknessFactor));
-
-    // Convert back to hex
-    const toHex = (n: number) => n.toString(16).padStart(2, "0");
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-  };
-
-  // Original color palette
-  const originalPalette = ["#97D6F4", "#F6A7EE", "#F8E486", "#A6E185", "#FEC598"];
-
-  // Process the colors to make them darker and more saturated
-  const colorPalette = originalPalette.map((color) => adjustColor(color, darknessFactor, saturationFactor));
-
-  // Create a mapping of categories to colors
-  const categories = Object.keys(menu);
-  const categoryColors = categories.reduce((acc, category, index) => {
-    acc[category] = colorPalette[index % colorPalette.length];
-    return acc;
-  }, {} as Record<string, string>);
+  const space = nativeIsPortrait ? "vh" : "vw";
 
   return (
-    <>
-      <div
-        className={`w-full h-full flex flex-col flex-wrap justify-between`}
-        style={{ padding: `1${space}`, gap: `1${space}` }}
-      >
-        {Object.keys(menu).map((category) => (
-          <div
-            key={category}
-            style={{
-              marginBottom: `0${space}`,
-              padding: `1${space}`,
-              backgroundColor: `${categoryColors[category]}CC`, // Adding 80 for 50% opacity
-            }}
-          >
-            <h2 className="break-after-avoid font-bold font-outfit tracking-wide" style={{ fontSize: `1.75${space}` }}>
-              {formatTitle(category)}
-            </h2>
-            <div className="font-quicksand font-semibold" style={{ fontSize: `1.25${space}` }}>
-              {menu[category].map((item: MenuItem) => (
-                <div
-                  key={item.name + item.price}
-                  className={`w-full flex items-center justify-between break-inside-avoid ${
-                    item.availability != "available" ? "opacity-50 line-through" : ""
-                  }`}
-                >
-                  <p className="">{item.name}</p>
-                  <p className="">{formatUSD(item.price)}</p>
-                </div>
-              ))}
-            </div>
+    <div className="columns-2 gap-0 h-full" style={{ columnFill: "auto", paddingTop: `1.25${space}` }}>
+      {Object.entries(menu).map(([category, items], i) => {
+        return (
+          <div key={category + i}>
+            <CategoryTitle
+              space={space == "vh" ? "vw" : "vh"}
+              category={category}
+              screen={screen}
+              needsDimensionSwap={needsDimensionSwap}
+            />
+            <ul style={{ marginTop: `1.25${space}`, marginBottom: `1.25${space}` }}>
+              {items.map((item, i) => {
+                return (
+                  <MenuItem
+                    key={item.name + item.price + i}
+                    item={item}
+                    space={space}
+                    screen={screen}
+                    needsDimensionSwap={needsDimensionSwap}
+                  />
+                );
+              })}
+            </ul>
           </div>
-        ))}
+        );
+      })}
+    </div>
+  );
+}
+
+function CategoryTitle({
+  category,
+  space,
+  screen,
+  needsDimensionSwap,
+}: {
+  category: string;
+  space: "vh" | "vw";
+  screen: Rect;
+  needsDimensionSwap: boolean;
+}) {
+  const title = formatTitle(category);
+
+  const ref = useRef<HTMLDivElement>(null);
+  const [isRight, setIsRight] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsRight(decideIsRight(ref, screen, needsDimensionSwap));
+  }, [screen, needsDimensionSwap]);
+
+  return (
+    <div
+      style={{ breakInside: "avoid" }}
+      className={`relative w-fit overflow-clip ${isRight ? "text-background" : "text-foreground"}`}
+      ref={ref}
+    >
+      <div className="absolute w-full right-0 top-0 bottom-0 z-10" style={{ width: `50${space}` }}>
+        <PaintBrush color={isRight ? undefined : "#f7f7f7"} className="h-auto w-full" />
       </div>
-    </>
+
+      <h2
+        className="relative inset-0 flex items-center w-fit z-20 whitespace-nowrap"
+        style={{
+          fontSize: `5${space}`,
+          transform: `translateY(-0.75${space})`,
+          paddingLeft: `2${space}`,
+          paddingRight: `10${space}`,
+        }}
+      >
+        {title}
+      </h2>
+    </div>
+  );
+}
+
+function MenuItem({
+  item,
+  space,
+  screen,
+  needsDimensionSwap,
+}: {
+  item: MenuItem;
+  space: "vh" | "vw";
+  screen: Rect;
+  needsDimensionSwap: boolean;
+}) {
+  const ref = useRef<HTMLLIElement>(null);
+  const [isRight, setIsRight] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsRight(decideIsRight(ref, screen, needsDimensionSwap));
+  }, [screen, needsDimensionSwap]);
+
+  return (
+    <li
+      ref={ref}
+      className={`flex w-full justify-between items-center ${isRight ? "text-foreground" : "text-background"}`}
+      style={{ paddingRight: `1.25${space}`, paddingLeft: `1.25${space}`, fontSize: `1.25${space}` }}
+    >
+      <div>{item.name}</div>
+      <div style={{ width: `4${space}` }}>{formatUSD(item.price)}</div>
+    </li>
   );
 }

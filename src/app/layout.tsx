@@ -16,13 +16,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Quicksand:wght@300..700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="antialiased font-quicksand">{children}</body>
+      <head></head>
+      <body>{children}</body>
     </html>
   );
 }
