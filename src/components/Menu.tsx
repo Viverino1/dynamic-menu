@@ -1,6 +1,8 @@
 import { formatTitle, formatUSD } from "@/lib/utils";
 import { RefObject, useEffect, useRef, useState } from "react";
 import PaintBrush from "./PaintBrush";
+import { FaLeaf, FaPepperHot } from "react-icons/fa";
+
 
 export default function Menu({
   menu,
@@ -109,46 +111,62 @@ function MenuContent({
   };
 
   return (
-    <div
-      className="columns-2 gap-0 h-full"
-      style={{
-        columnFill: "auto",
-        paddingTop: `1.25${space}`,
-        paddingBottom: `1.25${space}`,
-      }}
-    >
-      {Object.entries(menu).map(([category, items], i) => {
-        const processedItems = processItems(items);
+    <>
+      <div className="absolute top-0 right-0 left-0 font-sans font-black bg-foreground" style={{ height: `6${space}`, fontSize: `5${space}`, letterSpacing: `.5${space}` }}>
+        <div className="flex flex items-center justify-center" style={{ gap: `1${space}`, height: `5${space}` }}>
+          <div className="w-1/2 text-background text-right">DESI</div>
+          <div className="w-1/2 text-[#FC0001]" style={{ paddingLeft: `.3${space}` }}>BITES</div>
+        </div>
+        {/* <div className="text-background text-center font-bold" style={{ fontSize: `1.35${space}`, letterSpacing: `.1${space}` }}>St. Louis, MO</div> */}
+      </div>
 
-        return (
-          <div
-            className="flex flex-col"
-            key={category + i}
-            style={{ marginTop: `${i == 0 ? 0 : 1.25}${space}`, gap: `1.25${space}` }}
-          >
-            <CategoryTitle
-              space={space == "vh" ? "vw" : "vh"}
-              category={category}
-              screen={screen}
-              needsDimensionSwap={needsDimensionSwap}
-            />
-            <ul className="flex flex-col" style={{ gap: `.35${space}` }}>
-              {processedItems.map((item, i) => {
-                return (
-                  <MenuItem
-                    key={item.name + item.price + i}
-                    item={item}
-                    space={space}
-                    screen={screen}
-                    needsDimensionSwap={needsDimensionSwap}
-                  />
-                );
-              })}
-            </ul>
-          </div>
-        );
-      })}
-    </div>
+      <div className="absolute bottom-0 right-0 left-0 font-sans font-bold bg-foreground" style={{ fontSize: `1.75${space}`, paddingBottom: `1${space}`, paddingTop: `1${space}`, }}>
+        <div className="flex">
+          <div className="w-1/2 text-background text-center">We serve halal meat!</div>
+          <div className="w-1/2 text-background text-center" style={{}}>Closed Monday.</div>
+        </div>
+      </div>
+
+      <div
+        className="columns-2 gap-0 h-full"
+        style={{
+          columnFill: "auto",
+          paddingTop: `7.5${space}`,
+          paddingBottom: `5${space}`,
+        }}
+      >
+        {Object.entries(menu).map(([category, items], i) => {
+          const processedItems = processItems(items);
+
+          return (
+            <div
+              className="flex flex-col"
+              key={category + i}
+              style={{ marginTop: `${i == 0 ? 0 : 1.25}${space}`, gap: `1.25${space}` }}
+            >
+              <CategoryTitle
+                space={space == "vh" ? "vw" : "vh"}
+                category={category}
+                screen={screen}
+                needsDimensionSwap={needsDimensionSwap}
+              />
+              <ul className="flex flex-col" style={{ gap: `.35${space}` }}>
+                {processedItems.map((item, i) => {
+                  return (
+                    <MenuItem
+                      key={item.name + item.price + i}
+                      item={item}
+                      space={space}
+                      screen={screen}
+                      needsDimensionSwap={needsDimensionSwap}
+                    />
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })}
+      </div></>
   );
 }
 
@@ -182,14 +200,14 @@ function CategoryTitle({
         ref={ref}
       >
         <div className="absolute w-full right-0 top-0 bottom-0 z-10" style={{ width: `50${space}` }}>
-          <PaintBrush color={isRight ? undefined : "#f7f7f7"} className="h-auto w-full" />
+          <PaintBrush color={isRight ? "#000000" : "#f7f7f7"} className="h-auto w-full" />
         </div>
 
         <h2
           className="relative inset-0 flex items-center w-fit z-20 whitespace-nowrap"
           style={{
             fontSize: `5${space}`,
-            transform: `translateY(-0.75${space})`,
+            transform: `translateY(0.25${space})`,
             paddingLeft: `2${space}`,
             paddingRight: `10${space}`,
           }}
@@ -199,17 +217,17 @@ function CategoryTitle({
       </div>
       {/* <div
         className="flex items-end font-bold"
-        style={{ marginRight: `1.25${invertSpace}`, fontSize: `.85${invertSpace}`, gap: `0.5${invertSpace}` }}
+        style={{ marginRight: `1.25${invertSpace}`, fontSize: `1.5${invertSpace}`, gap: `0.5${invertSpace}` }}
       >
         <div
           className={`flex items-center justify-center ${isRight ? "text-foreground" : "text-background"}`}
-          style={{ width: `3${invertSpace}` }}
+          style={{ width: `4.5${invertSpace}` }}
         >
           FM
         </div>
         <div
           className={`flex items-center justify-center ${isRight ? "text-foreground" : "text-background"}`}
-          style={{ width: `3${invertSpace}` }}
+          style={{ width: `4.5${invertSpace}` }}
         >
           REG
         </div>
@@ -250,20 +268,27 @@ function MenuItem({
   return (
     <li
       ref={ref}
-      className={`flex w-full justify-between items-center font-bold ${
-        item.availability != "available" ? "line-through opacity-50" : "opacity-100"
-      } ${isRight ? "text-foreground" : "text-background"}`}
+      className={`flex font-sans w-full justify-between items-center font-bold ${item.availability != "available" ? "line-through opacity-50" : "opacity-100"
+        } ${isRight ? "text-foreground" : "text-background"}`}
       style={{
         paddingRight: `1.25${space}`,
         paddingLeft: `1.25${space}`,
-        fontSize: `1.25${space}`,
+        fontSize: `1.35${space}`,
         gap: `0.5${space}`,
       }}
     >
-      <div className="whitespace-nowrap truncate">{item.name.replace("(weekend Spl)", "")}</div>
-      <div className="flex items-center" style={{ gap: `0.5${space}`, fontSize: `.85${space}` }}>
-        {item.familyPrice && <div style={{ width: `3${space}` }}>{formatUSD(item.familyPrice)}</div>}
-        <div style={{ width: `3${space}` }}>{formatUSD(item.price)}</div>
+      <div className="flex-1 flex items-center min-w-0">
+        <div className=" whitespace-nowrap truncate w-fit">{item.name.replace("(weekend Spl)", "")}</div>
+        {item.diet == "vegetarian" && (
+          <FaLeaf className="flex-shrink-0" style={{ marginLeft: `0.35${space}` }} />
+        )}
+        {item.tags.includes("spicy") && (
+          <FaPepperHot className="flex-shrink-0" style={{ marginLeft: `0.35${space}` }} />
+        )}
+      </div>
+      <div className="flex items-center" style={{ gap: `0.75${space}`, fontSize: `1.35${space}` }}>
+        {item.familyPrice && <div style={{ width: `4.5${space}` }}>{formatUSD(item.familyPrice)}</div>}
+        <div style={{ width: `4.5${space}` }}>{formatUSD(item.price)}</div>
       </div>
     </li>
   );

@@ -28,7 +28,7 @@ declare global {
 
   type Diet = "vegetarian" | "non-vegetarian";
 
-  type Tag = "popular" | "new" | "family-pack";
+  type Tag = "popular" | "new" | "family-pack" | "spicy";
 
   interface Device {
     name: string;
@@ -53,4 +53,4 @@ declare global {
   type State = "loading" | "success" | "error";
 }
 
-export {};
+export { };
