@@ -3,7 +3,6 @@ import { RefObject, useEffect, useRef, useState } from "react";
 import PaintBrush from "./PaintBrush";
 import { FaLeaf, FaPepperHot } from "react-icons/fa";
 
-
 export default function Menu({
   menu,
   isPortrait,
@@ -112,18 +111,28 @@ function MenuContent({
 
   return (
     <>
-      <div className="absolute top-0 right-0 left-0 font-sans font-black bg-foreground" style={{ height: `6${space}`, fontSize: `5${space}`, letterSpacing: `.5${space}` }}>
+      <div
+        className="absolute top-0 right-0 left-0 font-sans font-black bg-foreground"
+        style={{ height: `6${space}`, fontSize: `5${space}`, letterSpacing: `.5${space}` }}
+      >
         <div className="flex flex items-center justify-center" style={{ gap: `1${space}`, height: `5${space}` }}>
           <div className="w-1/2 text-background text-right">DESI</div>
-          <div className="w-1/2 text-[#FC0001]" style={{ paddingLeft: `.3${space}` }}>BITES</div>
+          <div className="w-1/2 text-[#FC0001]" style={{ paddingLeft: `.3${space}` }}>
+            BITES
+          </div>
         </div>
         {/* <div className="text-background text-center font-bold" style={{ fontSize: `1.35${space}`, letterSpacing: `.1${space}` }}>St. Louis, MO</div> */}
       </div>
 
-      <div className="absolute bottom-0 right-0 left-0 font-sans font-bold bg-foreground" style={{ fontSize: `1.75${space}`, paddingBottom: `1${space}`, paddingTop: `1${space}`, }}>
+      <div
+        className="absolute bottom-0 right-0 left-0 font-sans font-semibold bg-foreground"
+        style={{ fontSize: `2.25${space}`, paddingBottom: `1${space}`, paddingTop: `.5${space}` }}
+      >
         <div className="flex">
-          <div className="w-1/2 text-background text-center">We serve halal meat!</div>
-          <div className="w-1/2 text-background text-center" style={{}}>Closed Monday.</div>
+          <div className="w-1/2 text-background text-center">
+            We serve <span className="font-black">halal meat</span>!
+          </div>
+          <div className="w-1/2 text-background text-center">Mondays Closed.</div>
         </div>
       </div>
 
@@ -166,7 +175,8 @@ function MenuContent({
             </div>
           );
         })}
-      </div></>
+      </div>
+    </>
   );
 }
 
@@ -268,27 +278,26 @@ function MenuItem({
   return (
     <li
       ref={ref}
-      className={`flex font-sans w-full justify-between items-center font-bold ${item.availability != "available" ? "line-through opacity-50" : "opacity-100"
-        } ${isRight ? "text-foreground" : "text-background"}`}
+      className={`flex font-sans w-full justify-between items-center font-bold ${
+        item.availability != "available" ? "line-through opacity-50" : "opacity-100"
+      } ${isRight ? "text-foreground" : "text-background"}`}
       style={{
         paddingRight: `1.25${space}`,
         paddingLeft: `1.25${space}`,
-        fontSize: `1.35${space}`,
+        fontSize: `1.75${space}`,
         gap: `0.5${space}`,
       }}
     >
       <div className="flex-1 flex items-center min-w-0">
         <div className=" whitespace-nowrap truncate w-fit">{item.name.replace("(weekend Spl)", "")}</div>
-        {item.diet == "vegetarian" && (
-          <FaLeaf className="flex-shrink-0" style={{ marginLeft: `0.35${space}` }} />
-        )}
+        {item.diet == "vegetarian" && <FaLeaf className="flex-shrink-0" style={{ marginLeft: `0.35${space}` }} />}
         {item.tags.includes("spicy") && (
           <FaPepperHot className="flex-shrink-0" style={{ marginLeft: `0.35${space}` }} />
         )}
       </div>
-      <div className="flex items-center" style={{ gap: `0.75${space}`, fontSize: `1.35${space}` }}>
-        {item.familyPrice && <div style={{ width: `4.5${space}` }}>{formatUSD(item.familyPrice)}</div>}
-        <div style={{ width: `4.5${space}` }}>{formatUSD(item.price)}</div>
+      <div className="flex items-center text-right" style={{ gap: `0.75${space}` }}>
+        {item.familyPrice && <div>{item.familyPrice}</div>}
+        <div>{item.price}</div>
       </div>
     </li>
   );
